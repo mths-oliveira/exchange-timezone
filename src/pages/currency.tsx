@@ -1,6 +1,5 @@
 import {
   Box,
-  Collapse,
   Flex,
   Table,
   TableCaption,
@@ -15,23 +14,15 @@ import {
 } from "@chakra-ui/react"
 import { useState } from "react"
 import { FlagImage } from "../components/flag-image"
-import { removeAccent } from "../utils/remove-accent"
 import { ToggleThemeButton } from "../components/toggle-theme-button"
-import { Drawer } from "../components/modal"
-
-import { debounce } from "../utils/debounce"
-
-import {
-  CurrencyController,
-  CurrencyData,
-} from "../backend/controllers/currencies"
+import { CurrencyController } from "../backend/controllers/currencies"
 import { GetServerSideProps } from "next"
 import { ProductsController } from "../backend/controllers/products"
 import { Currency } from "../backend/models/currency"
+import { CurrencyModal } from "../views/currency-modal"
+import { Profile } from "../components/profile"
 
 const currencyController = new CurrencyController()
-
-const currenciesData = currencyController.findAllData()
 const productsController = new ProductsController()
 
 export default function ({ initialCurrency }) {
@@ -40,62 +31,25 @@ export default function ({ initialCurrency }) {
   const currencyData = currencyController.findDataByCode(currency.code)
   const products = productsController.findAllByCurrencyQuote(currency.value)
 
-  const [query, setQuery] = useState("")
-  const regExp = RegExp(removeAccent(query), "i")
-  function filterCurrency(currency: CurrencyData) {
-    return Boolean(
-      regExp.exec(removeAccent(currency.name)) ||
-        regExp.exec(removeAccent(currency.country)) ||
-        regExp.exec(currency.code)
-    )
-  }
   return (
     <>
-      <Drawer
+      <CurrencyModal
         isOpen={isOpen}
         onClose={onClose}
-        onChange={(e) => {
-          setQuery(e.target.value)
+        onSelect={async (currenciesData) => {
+          const currency = await currencyController.findCurrencyByCode(
+            currenciesData.code
+          )
+          setCurrency(currency)
         }}
-      >
-        {currenciesData.map((currency) => (
-          <Collapse
-            in={filterCurrency(currency)}
-            key={currency.code}
-            animateOpacity
-          >
-            <Flex
-              alignItems="center"
-              cursor="pointer"
-              _hover={{ bg: "secondary" }}
-              onClick={async () => {
-                const data = await currencyController.findCurrencyByCode(
-                  currency.code
-                )
-                setCurrency(data)
-                onClose()
-              }}
-            >
-              <FlagImage country={currency.country} />
-              <Box fontWeight="600">
-                <Text>{currency.name}</Text>
-                <Text fontSize="14px" color="altText">
-                  {currency.code}
-                </Text>
-              </Box>
-            </Flex>
-          </Collapse>
-        ))}
-      </Drawer>
+      />
       <Flex justifyContent="space-between" alignItems="center" marginY="1.5rem">
         <Flex onClick={onOpen} alignItems="center" cursor="pointer">
-          <FlagImage country={currencyData.country} />
-          <Box fontWeight={600}>
-            <Text>{currency.name}</Text>
-            <Text fontSize="14px" color="altText">
-              {currency.code}
-            </Text>
-          </Box>
+          <Profile
+            country={currencyData.country}
+            title={currencyData.name}
+            text={currencyData.code}
+          />
         </Flex>
         <ToggleThemeButton />
       </Flex>
@@ -125,8 +79,7 @@ export default function ({ initialCurrency }) {
         }}
       >
         <TableCaption padding="1rem" color="altText">
-          Horários de início da primeira e da última aula de cada dia. (Horário
-          de
+          Valores de cada produto em {currency.name}
         </TableCaption>
         <Thead>
           <Tr>

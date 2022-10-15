@@ -18,6 +18,7 @@ import { ToggleThemeButton } from "../components/toggle-theme-button"
 import { ClassesController } from "../backend/controllers/classes"
 import { TimezoneController } from "../backend/controllers/timezone"
 import { TimezoneModal } from "../views/timezone-modal"
+import { Profile } from "../components/profile"
 
 const timezoneController = new TimezoneController()
 const initialTimezone = timezoneController.findById("America/Sao_Paulo")
@@ -33,13 +34,11 @@ export default function () {
       <TimezoneModal isOpen={isOpen} onClose={onClose} onSelect={setTimezone} />
       <Flex justifyContent="space-between" alignItems="center" marginY="1.5rem">
         <Flex onClick={onOpen} alignItems="center" cursor="pointer">
-          <FlagImage country={timezone.country} />
-          <Box fontWeight="600">
-            <Text>{timezone.city}</Text>
-            <Text fontSize="14px" color="altText">
-              {timezone.name}
-            </Text>
-          </Box>
+          <Profile
+            title={timezone.city}
+            text={timezone.name}
+            country={timezone.country}
+          />
         </Flex>
         <ToggleThemeButton />
       </Flex>

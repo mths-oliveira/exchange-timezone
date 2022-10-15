@@ -9,8 +9,10 @@ import {
 import { AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import { MdArrowBack } from "react-icons/md"
-import { TimezoneController } from "../backend/controllers/timezone"
-import { Timezone } from "../backend/models/timezone"
+import {
+  CurrencyController,
+  CurrencyData,
+} from "../backend/controllers/currencies"
 import { HiddenSmooth } from "../components/hidden-smooth"
 import { IconButton } from "../components/icon-button"
 import { Input } from "../components/input"
@@ -18,23 +20,21 @@ import { Profile } from "../components/profile"
 import { debounce } from "../utils/debounce"
 import { removeAccent } from "../utils/remove-accent"
 
-const timezoneController = new TimezoneController()
-const timezonesData = timezoneController.findAll()
+const currencyController = new CurrencyController()
+const currencyData = currencyController.findAllData()
 
 interface Props extends UseDisclosureProps {
-  onSelect: (timezone: Timezone) => void
+  onSelect: (currency: CurrencyData) => void
 }
 
-export function TimezoneModal({ isOpen, onClose, onSelect }: Props) {
+export function CurrencyModal({ isOpen, onClose, onSelect }: Props) {
   const [query, setQuery] = useState("")
   const regExp = RegExp(removeAccent(query), "i")
-  function filterTimezones(timezone: Timezone) {
-    if (query.match(/[0-9\+:-]/) || query.match(/gmt?/i)) {
-      return timezone.name.includes(query.toUpperCase())
-    }
+  function filterCurrency(currency: CurrencyData) {
     return Boolean(
-      regExp.exec(removeAccent(timezone.country)) ||
-        regExp.exec(removeAccent(timezone.city))
+      regExp.exec(removeAccent(currency.name)) ||
+        regExp.exec(removeAccent(currency.country)) ||
+        regExp.exec(currency.code)
     )
   }
   return (
@@ -69,13 +69,12 @@ export function TimezoneModal({ isOpen, onClose, onSelect }: Props) {
               onClick={onClose}
             />
           </Flex>
-
           <AnimatePresence initial={false}>
-            {timezonesData.map((timezone) => {
-              const isVisible = filterTimezones(timezone)
+            {currencyData.map((currency) => {
+              const isVisible = filterCurrency(currency)
               return (
                 isVisible && (
-                  <HiddenSmooth key={timezone.id}>
+                  <HiddenSmooth key={currency.code}>
                     <Flex
                       bg="primary"
                       cursor="pointer"
@@ -83,15 +82,15 @@ export function TimezoneModal({ isOpen, onClose, onSelect }: Props) {
                         bg: "secondary",
                       }}
                       onClick={() => {
-                        onSelect(timezone)
+                        onSelect(currency)
                         onClose()
                         setQuery("")
                       }}
                     >
                       <Profile
-                        country={timezone.country}
-                        title={timezone.city}
-                        text={timezone.name}
+                        country={currency.country}
+                        title={currency.name}
+                        text={currency.code}
                       />
                     </Flex>
                   </HiddenSmooth>
