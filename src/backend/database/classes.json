@@ -1,0 +1,24 @@
+{
+  "classes": [
+    {
+      "weekdays": "Segunda e Quarta",
+      "firstClass": 7,
+      "lastClass": 23
+    },
+    {
+      "weekdays": "Terça e Quinta",
+      "firstClass": 7,
+      "lastClass": 23
+    },
+    {
+      "weekdays": "Sexta",
+      "firstClass": 7,
+      "lastClass": 18
+    },
+    {
+      "weekdays": "Sábado",
+      "firstClass": 8,
+      "lastClass": 17
+    }
+  ]
+}

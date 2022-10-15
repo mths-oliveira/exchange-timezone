@@ -1,56 +1,147 @@
 import {
-  Link as ChakraLink,
+  Box,
+  Collapse,
+  Flex,
+  Table,
+  TableCaption,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
-  Code,
-  List,
-  ListIcon,
-  ListItem,
-} from '@chakra-ui/react'
-import { CheckCircleIcon, LinkIcon } from '@chakra-ui/icons'
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+} from "@chakra-ui/react"
+import { useEffect, useState } from "react"
+import { TimezoneController } from "../backend/controllers/timezone"
+import { FlagImage } from "../components/flag-image"
+import { removeAccent } from "../utils/remove-accent"
+import { ToggleThemeButton } from "../components/toggle-theme-button"
+import { Drawer } from "../components/drawer"
+import { Timezone } from "../backend/models/timezone"
+import { debounce } from "../utils/debounce"
+import { ClassesController } from "../backend/controllers/classes"
 
-import { Hero } from '../components/Hero'
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { CTA } from '../components/CTA'
-import { Footer } from '../components/Footer'
+const timezoneController = new TimezoneController()
+const timezonesData = timezoneController.findAll()
+const initialTimezone = timezoneController.findById("America/Sao_Paulo")
 
-const Index = () => (
-  <Container height="100vh">
-    <Hero />
-    <Main>
-      <Text color="text">
-        Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{' '}
-        <Code>TypeScript</Code>.
-      </Text>
+const classesController = new ClassesController()
 
-      <List spacing={3} my={0} color="text">
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink
-            isExternal
-            href="https://chakra-ui.com"
-            flexGrow={1}
-            mr={2}
+export default function () {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [timezone, setTimezone] = useState(initialTimezone)
+  const classes = classesController.findAllByTimezone(timezone.offset)
+  console.log(classes)
+  const [query, setQuery] = useState("")
+  const regExp = RegExp(removeAccent(query), "i")
+  function filterTimezones(timezone: Timezone) {
+    if (query.match(/[0-9\+:-]/) || query.match(/gmt?/i)) {
+      return timezone.name.includes(query.toUpperCase())
+    }
+    return Boolean(
+      regExp.exec(removeAccent(timezone.country)) ||
+        regExp.exec(removeAccent(timezone.city))
+    )
+  }
+  useEffect(() => {
+    if (!isOpen) setQuery("")
+  }, [isOpen])
+  return (
+    <>
+      <Drawer
+        isOpen={isOpen}
+        onClose={onClose}
+        onChange={debounce((e) => {
+          setQuery(e.target.value)
+        })}
+      >
+        {timezonesData.map((timezone) => (
+          <Collapse
+            in={filterTimezones(timezone)}
+            key={timezone.id}
+            animateOpacity
           >
-            Chakra UI <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink isExternal href="https://nextjs.org" flexGrow={1} mr={2}>
-            Next.js <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-      </List>
-    </Main>
+            <Flex
+              alignItems="center"
+              cursor="pointer"
+              _hover={{ bg: "secondary" }}
+              onClick={() => {
+                setTimezone(timezone)
+                onClose()
+              }}
+            >
+              <FlagImage country={timezone.country} />
+              <Box fontWeight="600">
+                <Text>{timezone.city}</Text>
+                <Text fontSize="14px" color="altText">
+                  {timezone.name}
+                </Text>
+              </Box>
+            </Flex>
+          </Collapse>
+        ))}
+      </Drawer>
+      <Flex justifyContent="space-between" alignItems="center" marginY="1.5rem">
+        <Flex onClick={onOpen} alignItems="center" cursor="pointer">
+          <FlagImage country={timezone.country} />
+          <Box fontWeight="600">
+            <Text>{timezone.city}</Text>
+            <Text fontSize="14px" color="altText">
+              {timezone.name}
+            </Text>
+          </Box>
+        </Flex>
+        <ToggleThemeButton />
+      </Flex>
 
-    <DarkModeSwitch />
-    <Footer>
-      <Text>Next ❤️ Chakra</Text>
-    </Footer>
-    <CTA />
-  </Container>
-)
-
-export default Index
+      <Table
+        variant="simple"
+        sx={{
+          "&>*>tr>*": {
+            paddingX: "1rem",
+            borderColor: "borderColor",
+            whiteSpace: "nowrap",
+            "&:first-child": {
+              width: "100%",
+            },
+          },
+          "&>*>tr>th": {
+            color: "altText",
+          },
+        }}
+      >
+        <TableCaption padding="1rem" color="altText">
+          Horários de início da primeira e da última aula de cada dia. (Horário
+          de {timezone.city})
+        </TableCaption>
+        <Thead>
+          <Tr>
+            <Th>Dias da semana</Th>
+            <Th>De</Th>
+            <Th>Às</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {classes.map(({ classes, weekdays }) => (
+            <Tr key={weekdays}>
+              <Td>{weekdays}</Td>
+              {classes.map((hours) => (
+                <Td key={hours + weekdays}>{hours}</Td>
+              ))}
+            </Tr>
+          ))}
+        </Tbody>
+        <Tfoot>
+          <Tr>
+            <Th>Dias da semana</Th>
+            <Th>De</Th>
+            <Th>Às</Th>
+          </Tr>
+        </Tfoot>
+      </Table>
+    </>
+  )
+}

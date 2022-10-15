@@ -4,15 +4,23 @@ export const theme = extendTheme({
   semanticTokens: {
     colors: {
       text: {
-        default: "#565857",
+        default: "#282828",
         _dark: "#FFF",
+      },
+      altText: {
+        default: "#565857",
+        _dark: "#AAA",
       },
       primary: {
         default: "#FFF",
         _dark: "#282828",
       },
       secondary: {
-        default: "#EEE",
+        default: "#f0f0f0",
+        _dark: "rgba(255,255,255,0.1)",
+      },
+      borderColor: {
+        default: "rgba(0,0,0,0.1)",
         _dark: "rgba(255,255,255,0.1)",
       },
     },
