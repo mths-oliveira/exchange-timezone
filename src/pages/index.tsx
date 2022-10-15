@@ -1,10 +1,8 @@
 import {
   Box,
-  Collapse,
   Flex,
   Table,
   TableCaption,
-  TableContainer,
   Tbody,
   Td,
   Text,
@@ -14,76 +12,25 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
-import { TimezoneController } from "../backend/controllers/timezone"
+import { useState } from "react"
 import { FlagImage } from "../components/flag-image"
-import { removeAccent } from "../utils/remove-accent"
 import { ToggleThemeButton } from "../components/toggle-theme-button"
-import { Drawer } from "../components/drawer"
-import { Timezone } from "../backend/models/timezone"
-import { debounce } from "../utils/debounce"
 import { ClassesController } from "../backend/controllers/classes"
+import { TimezoneController } from "../backend/controllers/timezone"
+import { TimezoneModal } from "../views/timezone-modal"
 
 const timezoneController = new TimezoneController()
-const timezonesData = timezoneController.findAll()
 const initialTimezone = timezoneController.findById("America/Sao_Paulo")
-
 const classesController = new ClassesController()
 
 export default function () {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onClose, onOpen } = useDisclosure()
   const [timezone, setTimezone] = useState(initialTimezone)
   const classes = classesController.findAllByTimezone(timezone.offset)
-  console.log(classes)
-  const [query, setQuery] = useState("")
-  const regExp = RegExp(removeAccent(query), "i")
-  function filterTimezones(timezone: Timezone) {
-    if (query.match(/[0-9\+:-]/) || query.match(/gmt?/i)) {
-      return timezone.name.includes(query.toUpperCase())
-    }
-    return Boolean(
-      regExp.exec(removeAccent(timezone.country)) ||
-        regExp.exec(removeAccent(timezone.city))
-    )
-  }
-  useEffect(() => {
-    if (!isOpen) setQuery("")
-  }, [isOpen])
+
   return (
     <>
-      <Drawer
-        isOpen={isOpen}
-        onClose={onClose}
-        onChange={(e) => {
-          setQuery(e.target.value)
-        }}
-      >
-        {timezonesData.map((timezone) => (
-          <Collapse
-            in={filterTimezones(timezone)}
-            key={timezone.id}
-            animateOpacity
-          >
-            <Flex
-              alignItems="center"
-              cursor="pointer"
-              _hover={{ bg: "secondary" }}
-              onClick={() => {
-                setTimezone(timezone)
-                onClose()
-              }}
-            >
-              <FlagImage country={timezone.country} />
-              <Box fontWeight="600">
-                <Text>{timezone.city}</Text>
-                <Text fontSize="14px" color="altText">
-                  {timezone.name}
-                </Text>
-              </Box>
-            </Flex>
-          </Collapse>
-        ))}
-      </Drawer>
+      <TimezoneModal isOpen={isOpen} onClose={onClose} onSelect={setTimezone} />
       <Flex justifyContent="space-between" alignItems="center" marginY="1.5rem">
         <Flex onClick={onOpen} alignItems="center" cursor="pointer">
           <FlagImage country={timezone.country} />
@@ -96,7 +43,6 @@ export default function () {
         </Flex>
         <ToggleThemeButton />
       </Flex>
-
       <Table
         variant="simple"
         sx={{
@@ -115,7 +61,7 @@ export default function () {
       >
         <TableCaption padding="1rem" color="altText">
           Horários de início da primeira e da última aula de cada dia. (Horário
-          de {timezone.city})
+          de {timezone.city}, {timezone.country})
         </TableCaption>
         <Thead>
           <Tr>

@@ -17,7 +17,7 @@ import { useState } from "react"
 import { FlagImage } from "../components/flag-image"
 import { removeAccent } from "../utils/remove-accent"
 import { ToggleThemeButton } from "../components/toggle-theme-button"
-import { Drawer } from "../components/drawer"
+import { Drawer } from "../components/modal"
 
 import { debounce } from "../utils/debounce"
 
