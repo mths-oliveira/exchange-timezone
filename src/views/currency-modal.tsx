@@ -46,12 +46,12 @@ export function CurrencyModal({ isOpen, onClose, onSelect }: Props) {
       closeOnOverlayClick={false}
     >
       <ModalOverlay />
-      <ModalContent bg="primary" position="relative">
-        <ModalBody padding="0">
+      <ModalContent bg="primary">
+        <ModalBody padding="0" position="relative">
           <Flex
             padding="1rem"
             position="sticky"
-            bottom="0"
+            top="0"
             bg="primary"
             zIndex="1"
           >

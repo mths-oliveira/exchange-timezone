@@ -82,55 +82,55 @@ export default function ({ initialCurrency }) {
         </TableCaption>
         <Thead>
           <Tr>
-            <Th>Produto</Th>
             <Th>Pagamento</Th>
+            <Th>Produto</Th>
             <Th>Valor</Th>
           </Tr>
         </Thead>
         <Tbody>
           <Tr>
-            <Td>Wol</Td>
             <Td>Mensalidade</Td>
+            <Td>Wol</Td>
             <Td>
               <Text>{currency.symbol}</Text>
               <Text>{products.wol.monthlyPayment}</Text>
             </Td>
           </Tr>
           <Tr>
-            <Td>Mult Wol</Td>
             <Td>Mensalidade</Td>
+            <Td>Mult Wol</Td>
             <Td>
               <Text>{currency.symbol}</Text>
               <Text>{products.multWol.monthlyPayment}</Text>
             </Td>
           </Tr>
           <Tr>
-            <Td>Live</Td>
             <Td>Matrícula</Td>
+            <Td>Live</Td>
             <Td>
               <Text>{currency.symbol}</Text>
               <Text>{products.live.enrolmentFee}</Text>
             </Td>
           </Tr>
           <Tr>
-            <Td>Live</Td>
             <Td>Mensalidade</Td>
+            <Td>Live</Td>
             <Td>
               <Text>{currency.symbol}</Text>
               <Text>{products.live.monthlyPayment}</Text>
             </Td>
           </Tr>
           <Tr>
-            <Td>Mult Live</Td>
             <Td>Matrícula</Td>
+            <Td>Mult Live</Td>
             <Td>
               <Text>{currency.symbol}</Text>
               <Text>{products.multLive.enrolmentFee}</Text>
             </Td>
           </Tr>
           <Tr>
-            <Td>Mult Live</Td>
             <Td>Mensalidade</Td>
+            <Td>Mult Live</Td>
             <Td>
               <Text>{currency.symbol}</Text>
               <Text>{products.multLive.monthlyPayment}</Text>
@@ -139,8 +139,8 @@ export default function ({ initialCurrency }) {
         </Tbody>
         <Tfoot>
           <Tr>
-            <Th>Produto</Th>
             <Th>Pagamento</Th>
+            <Th>Produto</Th>
             <Th>Valor</Th>
           </Tr>
         </Tfoot>
