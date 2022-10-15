@@ -13,7 +13,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { useState } from "react"
-import { FlagImage } from "../components/flag-image"
 import { ToggleThemeButton } from "../components/toggle-theme-button"
 import { CurrencyController } from "../backend/controllers/currencies"
 import { GetServerSideProps } from "next"

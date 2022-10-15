@@ -11,7 +11,7 @@ export function HiddenSmooth({ children }: HiddenSmoothProps) {
       initial={{ y: "50%", opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: "50%", opacity: 0 }}
-      transition={{ ease: "easeOut", duration: 0.2 }}
+      transition={{ ease: "easeOut", duration: 0.15 }}
     >
       {children}
     </motion.div>
