@@ -54,9 +54,9 @@ export default function () {
       <Drawer
         isOpen={isOpen}
         onClose={onClose}
-        onChange={debounce((e) => {
+        onChange={(e) => {
           setQuery(e.target.value)
-        })}
+        }}
       >
         {timezonesData.map((timezone) => (
           <Collapse

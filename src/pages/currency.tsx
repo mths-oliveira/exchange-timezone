@@ -54,9 +54,9 @@ export default function ({ initialCurrency }) {
       <Drawer
         isOpen={isOpen}
         onClose={onClose}
-        onChange={debounce((e) => {
+        onChange={(e) => {
           setQuery(e.target.value)
-        })}
+        }}
       >
         {currenciesData.map((currency) => (
           <Collapse
@@ -90,7 +90,7 @@ export default function ({ initialCurrency }) {
       <Flex justifyContent="space-between" alignItems="center" marginY="1.5rem">
         <Flex onClick={onOpen} alignItems="center" cursor="pointer">
           <FlagImage country={currencyData.country} />
-          <Box>
+          <Box fontWeight={600}>
             <Text>{currency.name}</Text>
             <Text fontSize="14px" color="altText">
               {currency.code}
