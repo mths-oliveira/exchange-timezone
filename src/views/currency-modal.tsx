@@ -6,14 +6,13 @@ import {
   Flex,
   UseDisclosureProps,
 } from "@chakra-ui/react"
-import { AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useState } from "react"
 import { MdArrowBack } from "react-icons/md"
 import {
   CurrencyController,
   CurrencyData,
 } from "../backend/controllers/currencies"
-import { HiddenSmooth } from "../components/hidden-smooth"
 import { IconButton } from "../components/icon-button"
 import { Input } from "../components/input"
 import { Profile } from "../components/profile"
@@ -47,9 +46,12 @@ export function CurrencyModal({ isOpen, onClose, onSelect }: Props) {
     >
       <ModalOverlay />
       <ModalContent bg="primary">
-        <ModalBody padding="0" position="relative">
+        <ModalBody padding="0" paddingX={{ lg: "12.5rem" }} position="relative">
           <Flex
             padding="1rem"
+            paddingY={{
+              lg: "2rem",
+            }}
             position="sticky"
             top="0"
             bg="primary"
@@ -69,35 +71,53 @@ export function CurrencyModal({ isOpen, onClose, onSelect }: Props) {
               onClick={onClose}
             />
           </Flex>
-          <AnimatePresence initial={false}>
-            {currencyData.map((currency) => {
-              const isVisible = filterCurrency(currency)
-              return (
-                isVisible && (
-                  <HiddenSmooth key={currency.code}>
-                    <Flex
-                      bg="primary"
-                      cursor="pointer"
-                      _hover={{
-                        bg: "secondary",
-                      }}
-                      onClick={() => {
-                        onSelect(currency)
-                        onClose()
-                        setQuery("")
-                      }}
-                    >
-                      <Profile
-                        country={currency.country}
-                        title={currency.name}
-                        text={currency.code}
-                      />
-                    </Flex>
-                  </HiddenSmooth>
-                )
-              )
-            })}
-          </AnimatePresence>
+
+          {currencyData.map((currency) => {
+            const isVisible = filterCurrency(currency)
+            return (
+              <motion.div
+                id={currency.code}
+                key={currency.code}
+                initial="visible"
+                animate={isVisible ? "visible" : "hidden"}
+                style={{
+                  overflow: "hidden",
+                }}
+                variants={{
+                  hidden: {
+                    opacity: 0,
+                    y: "50%",
+                    height: 0,
+                  },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    height: "initial",
+                  },
+                }}
+                transition={{ ease: "easeInOut" }}
+              >
+                <Flex
+                  bg="primary"
+                  cursor="pointer"
+                  _hover={{
+                    bg: "secondary",
+                  }}
+                  onClick={() => {
+                    onSelect(currency)
+                    onClose()
+                    setQuery("")
+                  }}
+                >
+                  <Profile
+                    country={currency.country}
+                    title={currency.name}
+                    text={currency.code}
+                  />
+                </Flex>
+              </motion.div>
+            )
+          })}
         </ModalBody>
       </ModalContent>
     </Modal>

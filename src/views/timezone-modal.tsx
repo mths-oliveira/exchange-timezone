@@ -6,12 +6,10 @@ import {
   Flex,
   UseDisclosureProps,
 } from "@chakra-ui/react"
-import { AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import { MdArrowBack } from "react-icons/md"
 import { TimezoneController } from "../backend/controllers/timezone"
 import { Timezone } from "../backend/models/timezone"
-import { HiddenSmooth } from "../components/hidden-smooth"
 import { IconButton } from "../components/icon-button"
 import { Input } from "../components/input"
 import { Profile } from "../components/profile"
@@ -47,9 +45,12 @@ export function TimezoneModal({ isOpen, onClose, onSelect }: Props) {
     >
       <ModalOverlay />
       <ModalContent bg="primary">
-        <ModalBody padding="0" position="relative">
+        <ModalBody padding="0" paddingX={{ lg: "12.5rem" }} position="relative">
           <Flex
             padding="1rem"
+            paddingY={{
+              lg: "2rem",
+            }}
             position="sticky"
             top="0"
             bg="primary"
@@ -70,35 +71,30 @@ export function TimezoneModal({ isOpen, onClose, onSelect }: Props) {
             />
           </Flex>
 
-          <AnimatePresence initial={false}>
-            {timezonesData.map((timezone) => {
-              const isVisible = filterTimezones(timezone)
-              return (
-                isVisible && (
-                  <HiddenSmooth key={timezone.id}>
-                    <Flex
-                      bg="primary"
-                      cursor="pointer"
-                      _hover={{
-                        bg: "secondary",
-                      }}
-                      onClick={() => {
-                        onSelect(timezone)
-                        onClose()
-                        setQuery("")
-                      }}
-                    >
-                      <Profile
-                        country={timezone.country}
-                        title={timezone.city}
-                        text={timezone.name}
-                      />
-                    </Flex>
-                  </HiddenSmooth>
-                )
-              )
-            })}
-          </AnimatePresence>
+          {timezonesData.map((timezone) => {
+            const isVisible = filterTimezones(timezone)
+            return (
+              <Flex
+                display={isVisible ? "flex" : "none"}
+                bg="primary"
+                cursor="pointer"
+                _hover={{
+                  bg: "secondary",
+                }}
+                onClick={() => {
+                  onSelect(timezone)
+                  onClose()
+                  setQuery("")
+                }}
+              >
+                <Profile
+                  country={timezone.country}
+                  title={timezone.city}
+                  text={timezone.name}
+                />
+              </Flex>
+            )
+          })}
         </ModalBody>
       </ModalContent>
     </Modal>

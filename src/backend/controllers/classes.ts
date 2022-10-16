@@ -7,9 +7,9 @@ export class ClassesController {
     const diffOffSet = timezoneOffset - this.defaultTimezoneOffset
     return data.classes.map((classes) => {
       date.setHours(classes.firstClass + diffOffSet)
-      const firstClass = date.toTimeString().substring(0, 5)
+      const firstClass = date.toTimeString().substring(0, 5).concat("h")
       date.setHours(classes.lastClass + diffOffSet)
-      const lastClass = date.toTimeString().substring(0, 5)
+      const lastClass = date.toTimeString().substring(0, 5).concat("h")
       return {
         classes: [firstClass, lastClass],
         weekdays: classes.weekdays,

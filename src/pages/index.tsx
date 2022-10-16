@@ -28,7 +28,6 @@ export default function () {
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [timezone, setTimezone] = useState(initialTimezone)
   const classes = classesController.findAllByTimezone(timezone.offset)
-
   return (
     <>
       <TimezoneModal isOpen={isOpen} onClose={onClose} onSelect={setTimezone} />

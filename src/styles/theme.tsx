@@ -43,6 +43,14 @@ export const theme = extendTheme({
         fontWeight: 500,
         scrollBehavior: "smooth",
       },
+      "@keyframes fade-out": {
+        from: { backgroundColor: "red" },
+        to: { backgroundColor: "yellow" },
+      },
+      "@keyframes fade-in": {
+        from: { backgroundColor: "red" },
+        to: { backgroundColor: "yellow" },
+      },
     },
   },
 })

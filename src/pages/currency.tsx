@@ -66,7 +66,6 @@ export default function ({ initialCurrency }) {
             "&:last-child": {
               display: "flex",
               justifyContent: "space-between",
-              fontWeight: "bold",
               "&>*:last-child": {
                 marginLeft: "0.25rem",
               },
